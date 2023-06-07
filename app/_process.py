@@ -1,6 +1,6 @@
 import telebot
 
-from ._constants import TOKEN
+from ._constants import TOKEN, YANDEX_LINK, WELCOME_TEXT, TG_MESSAGE
 from utils import configure_logger
 
 logger = configure_logger()
@@ -11,21 +11,19 @@ bot = telebot.TeleBot(TOKEN)
 def func(message):
     bot.send_message(
         message.chat.id,
-        "Здарова, {0.first_name} сейчас скину ссылку на яндекс диск".format(
-            message.from_user, bot.get_me()
+        WELCOME_TEXT.format(
+            message.from_user, YANDEX_LINK
         ),
         parse_mode="html",
     )
+    # bot.send_message(
+    #     message.chat.id,
+    #     YANDEX_LINK,
+    #     parse_mode="html",
+    # )
     bot.send_message(
         message.chat.id,
-        "ссылка ".format(message.from_user, bot.get_me()),
-        parse_mode="html",
-    )
-    bot.send_message(
-        message.chat.id,
-        "А также ты должен подписаться на телеграм канал Осы \nссылка на тг канал".format(
-            message.from_user, bot.get_me()
-        ),
+        TG_MESSAGE,
         parse_mode="html",
     )
 
