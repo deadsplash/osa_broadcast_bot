@@ -3,11 +3,11 @@ from utils import configure_logger
 
 logger = configure_logger()
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
-    logger.info('Bot started')
+    logger.info("Bot started")
     try:
         bot.polling(none_stop=True)
     except Exception as ex:
-        logger.error(f' >> WARNING, Bot has crashed. <<')
+        logger.error(f" >> WARNING, Bot has crashed. <<")
         raise ex

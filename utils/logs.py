@@ -8,8 +8,7 @@ def configure_logger():
         return configure_logger.logger
     except AttributeError:
         logger.remove()
-        logger.add(sys.stdout, level='INFO', enqueue=True)
+        logger.add(sys.stdout, level="INFO", enqueue=True)
         configure_logger.logger = logger
 
         return configure_logger.logger
-

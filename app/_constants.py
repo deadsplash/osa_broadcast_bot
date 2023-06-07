@@ -1,10 +1,16 @@
 import os
 
-TOKEN = os.getenv('TOKEN')
+TOKEN = os.getenv("TOKEN")
 
-YANDEX_LINK = 'yandex.ru'
-TG_CHANNEL = 'https://t.me/saucyosa'
+YANDEX_LINK = "https://ya.ru/"
+TG_CHANNEL = "t.me/saucyosa"
 
-WELCOME_TEXT = "Здарова, {0.first_name}!\n\nСсылка на яндекс-диск: \n{1}"
-TG_MESSAGE = f"А также ты должен подписаться на телеграм канал Осы \n{TG_CHANNEL}"
+WELCOME_TEXT = """Салют, {0.first_name}!
 
+Спасибо, что прошел опрос!
+
+Держи свой подарок — Drum-kit """
+TG_MESSAGE = (
+    f"Залетай в мой телеграм канал {TG_CHANNEL} — следи за новыми "
+    f"релизами, новостями и кучей штук, которые я готовлю на этот год"
+)
