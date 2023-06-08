@@ -2,7 +2,7 @@ import os
 
 TOKEN = os.getenv("TOKEN")
 
-YANDEX_LINK = "https://ya.ru/"
+YANDEX_LINK = "https://disk.yandex.ru/d/5cxfAL1uMI6jFQ"
 TG_CHANNEL = "t.me/saucyosa"
 
 WELCOME_TEXT = """Салют, {0.first_name}!

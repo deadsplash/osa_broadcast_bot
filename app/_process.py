@@ -11,7 +11,7 @@ logger = configure_logger()
 bot = telebot.TeleBot(TOKEN)
 
 
-@bot.message_handler(commands=["gift"])
+@bot.message_handler(commands=["start"])
 def thread_main(message):
     Thread(target=main_message, args=(message,)).start()
     Thread(target=send_delayed_message, args=(message,)).start()
@@ -31,7 +31,7 @@ def main_message(message):
 
 
 def send_delayed_message(message):
-    sleep(30)
+    sleep(15)
 
     bot.send_message(
         message.chat.id,
