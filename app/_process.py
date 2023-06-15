@@ -19,7 +19,8 @@ def thread_main(message):
 
 
 def main_message(message):
-    logger.info(print(f"{'user': {message.from_user}, 'id': {message.chat.id}, 'chat': {message.chat}})"))
+    logger.info(f"Message from: {message.from_user} | {message.chat.id}")
+
     bot.send_message(
         message.chat.id,
         WELCOME_TEXT.format(message.from_user),
