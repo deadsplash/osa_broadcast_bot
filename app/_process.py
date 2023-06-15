@@ -1,3 +1,4 @@
+import json
 from time import sleep
 from threading import Thread
 
@@ -18,7 +19,7 @@ def thread_main(message):
 
 
 def main_message(message):
-    logger.info(f"Message from {message.from_user}")
+    logger.info(print(f"{'user': {message.from_user}, 'id': {message.chat.id}, 'chat': {message.chat}})"))
     bot.send_message(
         message.chat.id,
         WELCOME_TEXT.format(message.from_user),
