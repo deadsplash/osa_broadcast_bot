@@ -8,6 +8,7 @@ from ._constants import TOKEN, YANDEX_LINK, WELCOME_TEXT, TG_MESSAGE
 from utils import configure_logger
 
 logger = configure_logger()
+
 bot = telebot.TeleBot(TOKEN)
 
 
