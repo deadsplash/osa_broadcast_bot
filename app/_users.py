@@ -2,7 +2,6 @@ from typing import List
 
 from utils.db import PostgresHandler
 from utils.logs import configure_logger
-from settings import settings
 
 logger = configure_logger()
 PG = PostgresHandler()
@@ -10,9 +9,6 @@ SCHEMA = "public"
 TABLE = "users"
 ADMIN_TABLE = "admin"
 ALLOWED_USER_TYPES = ["new", "involved", "admin"]
-
-if settings.ENV == "DEV":
-    TABLE += "_dev"
 
 
 class UsersProcess:
