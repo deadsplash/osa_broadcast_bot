@@ -126,7 +126,7 @@ def thread_whoami(message):
 @bot.message_handler(commands=["userscnt"])
 def chech_users_cnt(message):
     if USERS.check_admin(message.chat.id):
-        cnt = USERS._pg.query('select count() from public.users')
+        cnt = USERS._pg.query("select count() from public.users")
         bot.send_message(message.chat.id, f"Total users count: {cnt}")
 
 
