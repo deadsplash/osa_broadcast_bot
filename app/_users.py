@@ -27,7 +27,7 @@ class UsersProcess:
 
     def get_users_for_broadcast(self, user_type: str) -> List[str]:
 
-        query = f"SELECT chat_id from {SCHEMA}.{TABLE} where user_type = '{user_type}'"
+        query = f"SELECT chat_id from {SCHEMA}.{TABLE} "
         if user_type != "all":
             query += f"where user_type = '{user_type}'"
 
