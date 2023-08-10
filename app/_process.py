@@ -16,7 +16,6 @@ logger = configure_logger()
 bot = telebot.TeleBot(settings.BOT_TOKEN)
 USERS = UsersProcess()
 
-authorized_chat_ids = ["104694046"]
 broadcast_data = {}
 
 
@@ -45,6 +44,7 @@ class AdminBroadcast:
     def broadcast(self):
         logger.info("Start broadcast...")
         for user in self.users_for_broadcast:
+            print(user)
 
             if self.broadcast_type == "text":
                 self._antiflood(
@@ -52,8 +52,6 @@ class AdminBroadcast:
                 )
 
             elif self.broadcast_type == "photo":
-                with open("ph.pck", "wb") as f:
-                    pickle.dump(self.message, f)
                 self._antiflood(
                     function=bot.send_photo,
                     chat_id=user,
@@ -71,14 +69,14 @@ class AdminBroadcast:
 
             elif self.broadcast_type == "voice":
                 self._antiflood(
-                    function=bot.send_voice, chat_id=user, voice=self.message.voice
+                    function=bot.send_voice, chat_id=user, voice=self.message.voice.file_id
                 )
 
             elif self.broadcast_type == "video_note":
                 self._antiflood(
                     function=bot.send_video_note,
                     chat_id=user,
-                    data=self.message.video_note,
+                    data=self.message.video_note.file_id,
                 )
 
         logger.info("Broadcast finished")
@@ -98,13 +96,9 @@ class AdminBroadcast:
             return "text"
 
         if photo:
-            # if self.message.caption:
-            #     return "photo+text"
             return "photo"
 
         if video:
-            # if self.message.caption:
-            #     return "video+text"
             return "video"
 
         if voice:
@@ -155,7 +149,6 @@ def admin_broadcast(message):
                 ],
             ),
         )
-        # AdminBroadcast.run(message, broadcast_group='involved')
     else:
         logger.info(
             f"Invalid admin access attempt by{message.chat.id} - {message.from_user}"
@@ -211,10 +204,9 @@ def handle_rm_broadcast_callback(call):
 
 @bot.callback_query_handler(func=lambda call: call.data == "do_subscribe")
 def handle_subscribe_callback(call):
-    # Extract the user's unique identifier from the callback query object
     chat_id = (
         call.from_user.id
-    )  # You can use call.message.chat.id if you've stored it in the initial function
+    )
     USERS.add_user(chat_id=chat_id, user_type="involved")
 
     # Send a confirmation message back to the user
@@ -224,17 +216,10 @@ def handle_subscribe_callback(call):
     )
 
 
-@bot.callback_query_handler(func=lambda call: str(call.data) in [ALLOWED_USER_TYPES])
-def handle_confirmed_broadcast_callback(call):
-    print("ыть")
-
-    bot.send_message(call.from_user.id, "Начинаю рассылку")
-    AdminBroadcast.run(broadcast_data[call.from_user.id], broadcast_group=call.data)
-
-
 @bot.callback_query_handler(func=lambda call: True)
 def handle_confirmed_broadcast_callback(call):
     if call.data in ALLOWED_USER_TYPES:
 
-        bot.send_message(call.from_user.id, "Начинаю рассылку")
+        bot.send_message(call.from_user.id, "Начинаю рассылку 🫡")
         AdminBroadcast.run(broadcast_data[call.from_user.id], broadcast_group=call.data)
+        bot.send_message(call.from_user.id, "Рассылка завершена 💫")
