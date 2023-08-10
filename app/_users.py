@@ -8,7 +8,7 @@ PG = PostgresHandler()
 SCHEMA = "public"
 TABLE = "users"
 ADMIN_TABLE = "admin"
-ALLOWED_USER_TYPES = ["new", "involved", "admin"]
+ALLOWED_USER_TYPES = ["new", "involved", "all"]
 
 
 class UsersProcess:
@@ -16,7 +16,6 @@ class UsersProcess:
         self._pg: PostgresHandler = PostgresHandler()
 
     def add_user(self, chat_id: str, user_type: str = "new"):
-        self._check_user_type(user_type)
 
         self._execute(
             f"INSERT INTO {SCHEMA}.{TABLE} values "
@@ -27,9 +26,12 @@ class UsersProcess:
         logger.info(f"Added {user_type} user {chat_id} ")
 
     def get_users_for_broadcast(self, user_type: str) -> List[str]:
-        query_result = self._query(
-            f"SELECT chat_id from {SCHEMA}.{TABLE} where user_type = '{user_type}'"
-        )
+
+        query = f"SELECT chat_id from {SCHEMA}.{TABLE} where user_type = '{user_type}'"
+        if user_type != "all":
+            query += f"where user_type = '{user_type}'"
+
+        query_result = self._query(query)
         return [str(row[0]) for row in query_result]
 
     def get_user_type(self, chat_id: str) -> str:
@@ -65,8 +67,3 @@ class UsersProcess:
             logger.error("Trying to re-init connection")
             self._pg: PostgresHandler = PostgresHandler()
             self._pg.execute(query)
-
-    @staticmethod
-    def _check_user_type(user_type: str):
-        if user_type not in ALLOWED_USER_TYPES:
-            raise Exception(f"{user_type} is invalid type of user")

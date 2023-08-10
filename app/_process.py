@@ -69,7 +69,9 @@ class AdminBroadcast:
 
             elif self.broadcast_type == "voice":
                 self._antiflood(
-                    function=bot.send_voice, chat_id=user, voice=self.message.voice.file_id
+                    function=bot.send_voice,
+                    chat_id=user,
+                    voice=self.message.voice.file_id,
                 )
 
             elif self.broadcast_type == "video_note":
@@ -83,8 +85,6 @@ class AdminBroadcast:
 
     def define_broadcast_type(self):
         """Define broadcast type for further rules"""
-
-        print(self.message)
 
         text = self.message.text
         photo = self.message.photo
@@ -204,9 +204,7 @@ def handle_rm_broadcast_callback(call):
 
 @bot.callback_query_handler(func=lambda call: call.data == "do_subscribe")
 def handle_subscribe_callback(call):
-    chat_id = (
-        call.from_user.id
-    )
+    chat_id = call.from_user.id
     USERS.add_user(chat_id=chat_id, user_type="involved")
 
     # Send a confirmation message back to the user
