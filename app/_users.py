@@ -44,7 +44,7 @@ class UsersProcess:
 
     def check_admin(self, chat_id: str) -> bool:
         result = self._query(
-            f"select chat_id from {SCHEMA}.{ADMIN_TABLE} where chat_id = '{chat_id}'"
+            f"select chat_id from {SCHEMA}.{ADMIN_TABLE} where chat_id = '{chat_id}' and is_active = true"
         )
         if len(result) > 0:
             return True
