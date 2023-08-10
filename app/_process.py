@@ -123,6 +123,13 @@ def thread_whoami(message):
     Thread(target=whoami, args=(message,)).start()
 
 
+@bot.message_handler(commands=["userscnt"])
+def chech_users_cnt(message):
+    if USERS.check_admin(message.chat.id):
+        cnt = USERS._pg.query('select count() from public.users')
+        bot.send_message(message.chat.id, f"Total users count: {cnt}")
+
+
 @bot.message_handler(content_types=["text", "photo", "video", "voice", "video_note"])
 def thread_admin(message):
     Thread(target=admin_broadcast, args=(message,)).start()
