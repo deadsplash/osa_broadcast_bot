@@ -43,7 +43,6 @@ class AdminBroadcast:
     def broadcast(self):
         logger.info("Start broadcast...")
         for user in self.users_for_broadcast:
-            # print(user)
 
             if self.broadcast_type == "text":
                 self._antiflood(

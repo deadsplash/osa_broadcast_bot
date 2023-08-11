@@ -20,7 +20,6 @@ class UsersProcess:
             f"INSERT INTO {SCHEMA}.{TABLE} values "
             f"('{chat_id}', '{user_name}', '{user_type}', now())"
             f"ON CONFLICT (chat_id) DO UPDATE "
-            # f"SET user_type = EXCLUDED.user_type"
             f"SET (user_name, user_type) = ('{user_name}', '{user_type}')"
         )
         logger.info(f"Added {user_type} user {chat_id} ")
