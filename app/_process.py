@@ -126,7 +126,7 @@ def thread_whoami(message):
 @bot.message_handler(commands=["userscnt"])
 def chech_users_cnt(message):
     if USERS.check_admin(message.chat.id):
-        cnt = USERS._pg.query("select count() from public.users")
+        cnt = USERS._pg.query("select count(*) from public.users")[0][0]
         bot.send_message(message.chat.id, f"Total users count: {cnt}")
 
 
@@ -214,7 +214,6 @@ def handle_subscribe_callback(call):
     chat_id = call.from_user.id
     USERS.add_user(chat_id=chat_id, user_type="involved")
 
-    # Send a confirmation message back to the user
     bot.send_message(
         chat_id,
         SUB_TEXT,
@@ -224,7 +223,11 @@ def handle_subscribe_callback(call):
 @bot.callback_query_handler(func=lambda call: True)
 def handle_confirmed_broadcast_callback(call):
     if call.data in ALLOWED_USER_TYPES:
-
-        bot.send_message(call.from_user.id, "Начинаю рассылку 🫡")
-        AdminBroadcast.run(broadcast_data[call.from_user.id], broadcast_group=call.data)
-        bot.send_message(call.from_user.id, "Рассылка завершена 💫")
+        data = broadcast_data.get(call.from_user.id, None)
+        if data:
+            bot.send_message(call.from_user.id, "Начинаю рассылку 🫡")
+            AdminBroadcast.run(broadcast_data[call.from_user.id], broadcast_group=call.data)
+            del broadcast_data[call.from_user.id]
+            bot.send_message(call.from_user.id, "Рассылка завершена 💫")
+        else:
+            bot.send_message(call.from_user.id, "Нечего отправлять, начни заново 🙃")
