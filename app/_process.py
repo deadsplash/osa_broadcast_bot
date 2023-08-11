@@ -1,6 +1,5 @@
 from threading import Thread
 from typing import List
-import pickle
 
 import telebot
 from telebot.util import antiflood
@@ -44,7 +43,7 @@ class AdminBroadcast:
     def broadcast(self):
         logger.info("Start broadcast...")
         for user in self.users_for_broadcast:
-            print(user)
+            # print(user)
 
             if self.broadcast_type == "text":
                 self._antiflood(
@@ -157,9 +156,7 @@ def admin_broadcast(message):
             ),
         )
     else:
-        logger.info(
-            f"Invalid admin access attempt by{message.chat.id} - {message.from_user}"
-        )
+        ...
 
 
 def whoami(message):
@@ -205,8 +202,11 @@ def handle_broadcast_callback(call):
 
 @bot.callback_query_handler(func=lambda call: call.data == "rm_broadcast")
 def handle_rm_broadcast_callback(call):
-    del broadcast_data[call.from_user.id]
-    bot.send_message(call.from_user.id, "Ок, удалил у себя прошлую попытку")
+    if broadcast_data.get(call.from_user.id, None) is not None:
+        del broadcast_data[call.from_user.id]
+        bot.send_message(call.from_user.id, "Ок, удалил у себя прошлую попытку")
+    else:
+        bot.send_message(call.from_user.id, "Нечего удалять")
 
 
 @bot.callback_query_handler(func=lambda call: call.data == "do_subscribe")
@@ -224,7 +224,7 @@ def handle_subscribe_callback(call):
 def handle_confirmed_broadcast_callback(call):
     if call.data in ALLOWED_USER_TYPES:
         data = broadcast_data.get(call.from_user.id, None)
-        if data:
+        if data is not None:
             bot.send_message(call.from_user.id, "Начинаю рассылку 🫡")
             AdminBroadcast.run(broadcast_data[call.from_user.id], broadcast_group=call.data)
             del broadcast_data[call.from_user.id]
