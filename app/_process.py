@@ -129,6 +129,11 @@ def chech_users_cnt(message):
         bot.send_message(message.chat.id, f"Total users count: {cnt}")
 
 
+@bot.message_handler(commands=["stop"])
+def delete_user(message):
+    USERS.delete_user(message.chat.id)
+
+
 @bot.message_handler(content_types=["text", "photo", "video", "voice", "video_note"])
 def thread_admin(message):
     Thread(target=admin_broadcast, args=(message,)).start()
@@ -169,7 +174,9 @@ def whoami(message):
 def main_message(message):
     logger.info(f"Message from: {message.from_user} | {message.chat.id}")
 
-    USERS.add_user(chat_id=message.chat.id, user_type="new")
+    USERS.add_user(
+        chat_id=message.chat.id, user_name=message.from_user.first_name, user_type="new"
+    )
     bot.send_message(
         message.chat.id,
         WELCOME_TEXT.format(message.from_user),
@@ -212,7 +219,9 @@ def handle_rm_broadcast_callback(call):
 @bot.callback_query_handler(func=lambda call: call.data == "do_subscribe")
 def handle_subscribe_callback(call):
     chat_id = call.from_user.id
-    USERS.add_user(chat_id=chat_id, user_type="involved")
+    USERS.add_user(
+        chat_id=chat_id, user_name=call.from_user.first_name, user_type="involved"
+    )
 
     bot.send_message(
         chat_id,
@@ -226,7 +235,9 @@ def handle_confirmed_broadcast_callback(call):
         data = broadcast_data.get(call.from_user.id, None)
         if data is not None:
             bot.send_message(call.from_user.id, "Начинаю рассылку 🫡")
-            AdminBroadcast.run(broadcast_data[call.from_user.id], broadcast_group=call.data)
+            AdminBroadcast.run(
+                broadcast_data[call.from_user.id], broadcast_group=call.data
+            )
             del broadcast_data[call.from_user.id]
             bot.send_message(call.from_user.id, "Рассылка завершена 💫")
         else:

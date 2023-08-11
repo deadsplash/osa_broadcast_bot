@@ -15,13 +15,14 @@ class UsersProcess:
     def __init__(self):
         self._pg: PostgresHandler = PostgresHandler()
 
-    def add_user(self, chat_id: str, user_type: str = "new"):
+    def add_user(self, chat_id: str, user_name: str, user_type: str = "new") -> None:
 
         self._execute(
             f"INSERT INTO {SCHEMA}.{TABLE} values "
             f"('{chat_id}', '{user_type}', now())"
             f"ON CONFLICT (chat_id) DO UPDATE "
-            f"SET user_type = EXCLUDED.user_type"
+            # f"SET user_type = EXCLUDED.user_type"
+            f"SET (user_name, user_type) = ('{user_name}', '{user_type}')"
         )
         logger.info(f"Added {user_type} user {chat_id} ")
 
@@ -47,6 +48,11 @@ class UsersProcess:
         if len(result) > 0:
             return True
         return False
+
+    def delete_user(self, chat_id: str) -> None:
+
+        self._pg.query(f"DELETE FROM {SCHEMA}.{TABLE} where chat_id = '{chat_id}'")
+        logger.warning(f"Deleted {chat_id} ")
 
     def _query(self, query: str):
 
